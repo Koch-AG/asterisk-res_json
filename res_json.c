@@ -280,7 +280,7 @@ static int jsonpretty_exec(struct ast_channel *chan,
 	char *pretty = cJSON_Print(doc);
 	ast_copy_string(buffer, pretty, buflen);
 	cJSON_Delete(doc);
-	free(pretty);
+	ast_free(pretty);
 	json_set_operation_result(chan, ASTJSON_OK);
 	return 0;
 
@@ -318,7 +318,7 @@ static int jsoncompress_exec(struct ast_channel *chan,
 	char *unpretty = cJSON_PrintUnformatted(doc);
 	ast_copy_string(buffer, unpretty, buflen);
 	cJSON_Delete(doc);
-	free(unpretty);
+	ast_free(unpretty);
 	json_set_operation_result(chan, ASTJSON_OK);
 	return 0;
 
@@ -396,7 +396,7 @@ static int jsonelement_exec(struct ast_channel *chan,
 			else
 				ast_asprintf(&value, "%d", thisobject->valueint); 
 			ast_copy_string(buffer, value, buflen); 
-			free(value);
+			ast_free(value);
 			break;
 		case cJSON_String: 
 			type = ast_strdupa("string"); 
@@ -471,14 +471,14 @@ static int jsonvariables_exec(struct ast_channel *chan, const char *data) {
 					else
 						ast_asprintf(&num, "%d", nvp->valueint); 
 					pbx_builtin_setvar_helper(chan, nvp->string, num); 
-					free(num);
+					ast_free(num);
 					break;
 				case cJSON_String: pbx_builtin_setvar_helper(chan, nvp->string, nvp->valuestring); break;
 				case cJSON_Array: pbx_builtin_setvar_helper(chan, nvp->string, "!array!"); break;
 				case cJSON_Object: 
 					eljson = cJSON_PrintUnformatted(nvp);
 					pbx_builtin_setvar_helper(chan, nvp->string, eljson); 
-					free(eljson);
+					ast_free(eljson);
 					break;
 				default: 
 					break;
@@ -637,7 +637,7 @@ static int jsonadd_exec(struct ast_channel *chan, const char *data) {
 		pbx_builtin_setvar_helper(chan, args.json, jsonresult);
 	// cleanup the mess and let's get outta here
 	ast_log(LOG_DEBUG, "resulting json: %s\n", jsonresult);
-	free(jsonresult);
+	ast_free(jsonresult);
 	cJSON_Delete(doc);
 	json_set_operation_result(chan, ret);
 	return 0;
@@ -762,7 +762,7 @@ static int jsonset_exec(struct ast_channel *chan, const char *data) {
 	if (ret == ASTJSON_OK)
 		pbx_builtin_setvar_helper(chan, args.json, jsonresult);
 	// cleanup the mess and let's get outta here
-	free(jsonresult);
+	ast_free(jsonresult);
 	cJSON_Delete(doc);
 	json_set_operation_result(chan, ret);
 	return 0;
@@ -855,7 +855,7 @@ static int jsondelete_exec(struct ast_channel *chan, const char *data) {
 	char *jsonresult = cJSON_PrintUnformatted(doc);
 	if (ret == ASTJSON_OK)
 		pbx_builtin_setvar_helper(chan, args.jsonvarname, jsonresult); 
-	free(jsonresult);
+	ast_free(jsonresult);
 	cJSON_Delete(doc);
 	json_set_operation_result(chan, ret);
 	return 0;
